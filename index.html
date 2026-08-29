@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYDX — Profile</title>
+  <meta name="description" content="Personal profile website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#071a35;
+      --panel:rgba(8,19,48,.72);
+      --panel2:rgba(17,18,53,.55);
+      --line:rgba(126,111,255,.52);
+      --line2:rgba(111,177,255,.28);
+      --text:#f8f8ff;
+      --muted:#b8bfd8;
+      --purple:#7567ff;
+      --cyan:#53d6ff;
+      --glow:0 0 30px rgba(210,92,255,.42);
+      --pink:#ff73d1;
+      --pink2:#b76cff;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Rajdhani,system-ui,sans-serif;color:var(--text)}
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
+      background:transparent;
+    }
+    .backdrop{
+      position:fixed;inset:0;z-index:-3;
+      object-fit:cover;width:100%;height:100%;
+      filter:saturate(.85) brightness(.72);
+      transform:scale(1.03);
+    }
+    .backdrop:after{
+      content:"";position:absolute;inset:0;
+      background:
+        radial-gradient(circle at 50% 25%,rgba(66,122,255,.15),transparent 32%),
+        linear-gradient(90deg,rgba(4,21,43,.3),transparent 50%,rgba(4,21,43,.35));
+    }
+    .noise{
+      position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.11;
+      background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .6px);
+      background-size:5px 5px;
+      mix-blend-mode:overlay;
+    }
+    .page{
+      position:relative;z-index:2;
+      min-height:100vh;display:flex;justify-content:center;align-items:center;
+      padding:36px 18px 54px;
+    }
+    .wrap{width:min(390px,94vw)}
+    .profile{
+      position:relative;
+      padding:27px 25px 31px;
+      border:1px solid rgba(220,120,255,.65);
+      border-radius:21px;
+      background:
+        linear-gradient(145deg,rgba(92,35,105,.72),rgba(48,23,77,.78) 55%,rgba(28,18,58,.82));
+      box-shadow:0 22px 60px rgba(0,0,0,.42),0 0 35px rgba(210,92,255,.20);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      overflow:hidden;
+    }
+    .profile:before{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      background:
+        linear-gradient(rgba(91,137,255,.14) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(91,137,255,.14) 1px,transparent 1px);
+      background-size:18px 18px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 78%);
+    }
+    .topglow{
+      position:absolute;width:180px;height:100px;left:50%;top:0;transform:translateX(-50%);
+      background:radial-gradient(ellipse,rgba(79,146,255,.20),transparent 70%);
+      pointer-events:none;
+    }
+    .avatar-ring{
+      position:relative;margin:0 auto 12px;width:112px;height:112px;padding:4px;
+      border-radius:50%;
+      background:linear-gradient(145deg,#e9c94e,#7e6a20 55%,#f5d858);
+      box-shadow:0 0 18px rgba(234,205,70,.45);
+    }
+    .avatar-ring:after{
+      content:"";position:absolute;inset:-5px;border-radius:50%;
+      border:1px solid rgba(255,226,90,.45);
+    }
+    .avatar{
+      width:100%;height:100%;display:block;border-radius:50%;object-fit:cover;
+      border:2px solid rgba(192,92,255,.9);
+    }
+    h1{
+      position:relative;margin:0;text-align:center;
+      font-family:Orbitron,sans-serif;font-size:29px;letter-spacing:.2px;
+      color:white;
+      text-shadow:0 0 4px #fff,0 0 13px rgba(255,255,255,.8),0 0 25px rgba(134,128,255,.7);
+    }
+    .badges{position:relative;display:flex;justify-content:center;gap:8px;margin:13px 0 13px}
+    .badge{
+      width:39px;height:39px;display:grid;place-items:center;border-radius:10px;
+      background:rgba(29,39,69,.84);border:1px solid rgba(126,136,185,.38);
+      box-shadow:inset 0 0 12px rgba(90,100,180,.12);
+      font-size:19px;
+    }
+    .badge.code{color:#69a5ff}.badge.discord{color:#fff}.badge.verify{color:#62d9ff}.badge.money{color:#42e27d}
+    .bio,.url{position:relative;text-align:center}
+    .bio{margin:0;font-size:14px;font-weight:600;color:#eef0fa}
+    .url{margin:10px 0 0;font-size:13px;color:#d7d9e9}
+    .socials{position:relative;display:grid;grid-template-columns:repeat(3,64px);justify-content:center;gap:10px;margin-top:19px}
+    .social{
+      aspect-ratio:1;display:grid;place-items:center;border-radius:14px;
+      text-decoration:none;color:#fff;font-size:21px;
+      background:linear-gradient(145deg,rgba(31,30,72,.76),rgba(18,19,51,.78));
+      border:1px solid rgba(118,91,255,.62);
+      box-shadow:inset 0 0 16px rgba(91,72,255,.09),0 0 0 rgba(0,0,0,0);
+      transition:.2s ease;
+    }
+    .social:hover{transform:translateY(-3px);box-shadow:0 0 18px rgba(113,91,255,.38);border-color:#8b7eff}
+    .social svg{width:23px;height:23px;fill:currentColor}
+    .status{
+      position:relative;margin-top:12px;padding:10px 12px;
+      display:flex;align-items:center;gap:11px;text-align:left;
+      border-radius:13px;background:linear-gradient(90deg,rgba(51,36,73,.55),rgba(34,28,61,.5));
+      border:1px solid rgba(125,104,161,.30);
+    }
+    .status img{width:39px;height:39px;border-radius:50%;object-fit:cover}
+    .status b{display:block;font-size:14px;line-height:1.1}
+    .status small{display:block;margin-top:4px;color:#aeb3c9;font-size:11px}
+    .dot{display:inline-block;width:7px;height:7px;background:#7e8297;border-radius:50%;margin-right:4px;box-shadow:0 0 6px #7e8297}
+    .links{margin-top:24px;display:grid;gap:10px}
+    .link{
+      min-height:44px;display:flex;align-items:center;justify-content:center;
+      padding:10px 14px;border-radius:12px;
+      color:#eae8ff;text-decoration:none;font-weight:700;font-size:15px;
+      background:linear-gradient(180deg,rgba(14,24,56,.76),rgba(9,14,43,.80));
+      border:1px solid rgba(116,95,245,.72);
+      box-shadow:0 8px 24px rgba(0,0,0,.18),inset 0 0 12px rgba(93,79,255,.07);
+      transition:.2s ease;
+    }
+    .link:hover{transform:translateY(-2px);background:rgba(28,29,78,.9);box-shadow:0 0 19px rgba(104,86,255,.32)}
+    .hint{margin:17px 0 0;text-align:center;color:rgba(230,233,250,.55);font-size:11px}
+    @media(max-width:480px){
+      .page{padding:20px 12px 35px}.profile{padding:23px 19px 26px}.socials{gap:7px}
+    }
+  
+    /* Smooth mouse + bubble effects */
+    html, body, a, button { cursor: none; }
+    #entryScreen, #entryScreen * { cursor: pointer !important; }
+    #entryScreen { cursor: pointer !important; }
+    .cursor-dot{
+      position:fixed;z-index:9999;pointer-events:none;width:7px;height:7px;
+      border-radius:50%;background:#fff;
+      box-shadow:0 0 10px #fff,0 0 20px var(--pink),0 0 30px var(--pink2);
+      transform:translate(-50%,-50%);
+    }
+    .cursor-ring{
+      position:fixed;z-index:9998;pointer-events:none;width:30px;height:30px;
+      border:1.5px solid rgba(255,133,224,.85);border-radius:50%;
+      transform:translate(-50%,-50%);
+      box-shadow:0 0 15px rgba(213,100,255,.35);
+      transition:width .18s ease,height .18s ease,border-color .18s ease;
+    }
+    .bubble{
+      position:fixed;z-index:9997;pointer-events:none;
+      width:var(--s);height:var(--s);border-radius:50%;
+      left:var(--x);top:var(--y);
+      border:1px solid rgba(255,160,234,.72);
+      background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.65),rgba(255,120,224,.12) 45%,transparent 72%);
+      box-shadow:0 0 9px rgba(255,105,219,.45);
+      animation:bubbleUp .8s ease-out forwards;
+    }
+    @keyframes bubbleUp{
+      0%{opacity:.8;transform:translate(-50%,-50%) scale(.35)}
+      60%{opacity:.48}
+      100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 35px)) scale(1.15)}
+    }
+    .music-card{
+      position:relative;margin-top:14px;padding:9px 10px;
+      display:flex;align-items:center;gap:7px;justify-content:center;flex-wrap:wrap;
+      border:1px solid rgba(220,120,255,.35);border-radius:12px;
+      background:rgba(70,28,83,.32);
+    }
+    .music-btn,.volume-btn{
+      border:1px solid rgba(255,133,224,.62);border-radius:10px;
+      padding:8px 12px;color:#fff;font:600 13px Rajdhani,sans-serif;
+      background:linear-gradient(135deg,rgba(204,75,184,.45),rgba(116,70,202,.45));
+      box-shadow:0 0 14px rgba(218,85,230,.18);
+      transition:.18s ease;
+    }
+    .music-btn:hover,.volume-btn:hover{transform:translateY(-1px);box-shadow:0 0 17px rgba(218,85,230,.35)}
+    .volume-btn{width:34px;padding:7px 0;font-size:19px;line-height:1}
+    .volume-text{min-width:38px;text-align:center;color:#eee4f8;font-size:12px;font-weight:700}
+    .music-title{font-size:12px;color:#d9cce7}
+    @media (pointer: coarse){
+      html,body,a,button{cursor:auto}
+      .cursor-dot,.cursor-ring{display:none}
+    }
+
+  
+    /* Entry screen — click to enter + glow */
+    .entry-screen{
+      position:fixed;inset:0;z-index:10000;
+      display:flex;align-items:center;justify-content:center;
+      background:#000;
+      opacity:1;visibility:visible;
+      transition:opacity .9s ease,visibility .9s ease;
+    }
+    .entry-screen.hide{
+      opacity:0;visibility:hidden;pointer-events:none;
+    }
+    .entry-glow{
+      position:absolute;width:320px;height:150px;
+      background:radial-gradient(ellipse,rgba(211,94,255,.18),transparent 68%);
+      filter:blur(18px);
+      animation:entryGlow 2s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .enter-btn{
+      position:relative;
+      border:0;background:transparent;color:#fff;
+      font-family:Rajdhani,sans-serif;font-size:22px;font-weight:500;
+      letter-spacing:.3px;padding:18px 28px;
+      text-shadow:0 0 8px rgba(255,255,255,.75),0 0 20px rgba(214,95,255,.75);
+      animation:entryTextGlow 2s ease-in-out infinite;
+    }
+    .enter-btn::after{
+      content:"";
+      position:absolute;left:50%;bottom:6px;
+      width:0;height:1px;transform:translateX(-50%);
+      background:linear-gradient(90deg,transparent,#fff,#cf72ff,transparent);
+      box-shadow:0 0 12px #d77aff;
+      transition:width .35s ease;
+    }
+    .enter-btn:hover::after{width:85%}
+    .enter-btn:hover{
+      transform:scale(1.035);
+      text-shadow:0 0 10px #fff,0 0 25px #d46aff,0 0 45px rgba(212,106,255,.65);
+    }
+    @keyframes entryGlow{
+      0%,100%{transform:scale(.88);opacity:.55}
+      50%{transform:scale(1.18);opacity:1}
+    }
+    @keyframes entryTextGlow{
+      0%,100%{opacity:.78}
+      50%{opacity:1}
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="entryScreen" class="entry-screen">
+    <div class="entry-glow"></div>
+    <button id="enterBtn" class="enter-btn" type="button">click to enter...</button>
+  </div>
+
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  <div id="bubble-layer"></div>
+  <video class="backdrop" autoplay muted loop playsinline>
+    <source src="assets/background.mp4" type="video/mp4">
+  </video>
+  <div class="backdrop-overlay"></div><div class="noise"></div>
+
+  <main class="page">
+    <div class="wrap">
+      <section class="profile">
+        <div class="topglow"></div>
+        <div class="avatar-ring">
+          <img class="avatar" src="assets/avatar.jpg" alt="Profile picture">
+        </div>
+
+        <h1>AYDX</h1>
+
+        <div class="badges">
+          <div class="badge code" title="Developer">⌘</div>
+          <div class="badge discord" title="Discord">◉</div>
+          <div class="badge verify" title="Verified">✓</div>
+          <div class="badge money" title="Supporter">$</div>
+        </div>
+
+        <p class="bio">welcome to my profile</p>
+        <p class="url">AYDX</p>
+
+        <div class="socials">
+          <a class="social" href="https://www.tiktok.com/@aydx.aep" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+            <svg viewBox="0 0 24 24"><path d="M16.6 3c.3 1.8 1.3 3.1 3.2 3.4v3.1c-1.3-.1-2.5-.5-3.5-1.2v6.1c0 4.2-3.1 6.6-6.7 6.6-3.1 0-5.6-2.1-5.6-5.2 0-3.3 2.8-5.6 6-5.6.4 0 .8 0 1.2.1v3.2c-.4-.1-.8-.2-1.2-.2-1.5 0-2.8 1-2.8 2.5 0 1.3 1 2.2 2.4 2.2 1.7 0 2.9-1 2.9-3.1V3h4.1Z"/></svg>
+          </a>
+          <a class="social" href="https://www.instagram.com/adem_mt.9/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.25-3.25a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z"/></svg>
+          </a>
+          <a class="social" href="https://discord.gg/eQxTWVN5y" target="_blank" rel="noopener noreferrer" aria-label="Discord" title="Discord">
+            <svg viewBox="0 0 24 24"><path d="M19.54 4.2A16 16 0 0 0 15.5 3l-.5 1.02a14.5 14.5 0 0 0-6 0L8.5 3a16 16 0 0 0-4.04 1.2C1.9 8.02 1.2 11.75 1.55 15.43A16.4 16.4 0 0 0 6.5 18l1.2-1.65c-.65-.24-1.28-.54-1.87-.9l.45-.34c3.6 1.65 7.53 1.65 11.1 0l.45.34c-.6.36-1.22.66-1.87.9L17.16 18a16.4 16.4 0 0 0 4.95-2.57c.4-4.26-.68-7.95-2.57-11.23ZM8.86 13.18c-1.08 0-1.97-.99-1.97-2.2s.87-2.2 1.97-2.2c1.1 0 1.98.99 1.97 2.2 0 1.21-.87 2.2-1.97 2.2Zm6.28 0c-1.08 0-1.97-.99-1.97-2.2s.87-2.2 1.97-2.2c1.1 0 1.98.99 1.97 2.2 0 1.21-.87 2.2-1.97 2.2Z"/></svg>
+          </a>
+        </div>
+
+        <div class="status">
+          <img src="assets/avatar.jpg" alt="">
+          <div>
+            <b>AYDX</b>
+            <small><span class="dot"></span>Last seen 8h ago</small>
+          </div>
+        </div>
+      </section>
+
+
+      <div class="music-card">
+        <span class="music-title">🎵 AYDX • Music</span>
+        <button id="volDown" class="volume-btn" type="button" aria-label="Volume down">−</button>
+        <span id="volumeText" class="volume-text">20%</span>
+        <button id="volUp" class="volume-btn" type="button" aria-label="Volume up">+</button>
+        <audio id="bgMusic" src="assets/music.mp3" loop autoplay preload="auto"></audio>
+        <audio id="bubbleSound" src="assets/bubble-sound.mp3" preload="auto"></audio>
+      </div>
+      <p class="hint">AYDX • TikTok • Instagram • Discord</p>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const dot = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+      const layer = document.getElementById('bubble-layer');
+
+      let mx = innerWidth/2, my = innerHeight/2;
+      let rx = mx, ry = my;
+      let lastBubble = 0;
+      let bubbleLastSound = 0;
+      let userActivated = false;
+
+      addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        bubbleMouseMoving();
+        if (dot) {
+          dot.style.left = mx + 'px';
+          dot.style.top = my + 'px';
+        }
+        if (performance.now() - lastBubble > 42) {
+          makeBubble(mx, my);
+          lastBubble = performance.now();
+        }
+      }, {passive:true});
+
+      function animate() {
+        rx += (mx-rx)*0.16;
+        ry += (my-ry)*0.16;
+        if (ring) {
+          ring.style.left = rx + 'px';
+          ring.style.top = ry + 'px';
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+      function makeBubble(x,y){
+        if(!layer) return;
+        const b=document.createElement('span');
+        const s=(3+Math.random()*7).toFixed(1)+'px';
+        b.className='bubble';
+        b.style.setProperty('--x',x+'px');
+        b.style.setProperty('--y',y+'px');
+        b.style.setProperty('--s',s);
+        b.style.setProperty('--dx',((Math.random()-.5)*34).toFixed(1)+'px');
+        layer.appendChild(b);
+        setTimeout(()=>b.remove(),820);
+      }
+
+
+      /* BUBBLE_MOVE_AUDIO_START */
+      const bubbleSound = document.getElementById('bubbleSound');
+      let bubbleMovingTimer = null;
+
+      if (bubbleSound) {
+        bubbleSound.loop = true;
+        bubbleSound.volume = 0.035;
+      }
+
+      function startBubbleSound(){
+        if (!bubbleSound || !userActivated) return;
+        if (bubbleSound.paused) bubbleSound.play().catch(()=>{});
+      }
+
+      function stopBubbleSound(){
+        if (bubbleSound) bubbleSound.pause();
+      }
+
+      function bubbleMouseMoving(){
+        if (!userActivated) return;
+        startBubbleSound();
+        clearTimeout(bubbleMovingTimer);
+        bubbleMovingTimer = setTimeout(stopBubbleSound, 140);
+      }
+      /* BUBBLE_MOVE_AUDIO_END */
+
+      const audio=document.getElementById('bgMusic');
+      const down=document.getElementById('volDown');
+      const up=document.getElementById('volUp');
+      const volumeText=document.getElementById('volumeText');
+      const entryScreen=document.getElementById('entryScreen');
+      const enterBtn=document.getElementById('enterBtn');
+
+      let volume=0.20;
+      audio.volume=volume;
+
+      function updateVolume(){
+        audio.volume=volume;
+        if(volumeText) volumeText.textContent=Math.round(volume*100)+'%';
+      }
+      updateVolume();
+
+      down?.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        volume=Math.max(0,volume-0.10);
+        updateVolume();
+      });
+
+      up?.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        volume=Math.min(1,volume+0.10);
+        updateVolume();
+      });
+
+      // The entry screen is the music activation button.
+      async function enterSite(){
+        // The entry click gives the browser permission to play audio.
+        userActivated = true;
+        try{
+          await audio.play();
+        }catch(e){
+          // The click itself is a user gesture, so this normally succeeds.
+        }
+        entryScreen?.classList.add('hide');
+        setTimeout(()=>{
+          if(entryScreen) entryScreen.remove();
+        },950);
+      }
+
+      enterBtn?.addEventListener('click',enterSite);
+      entryScreen?.addEventListener('click',(e)=>{
+        if(e.target === entryScreen) enterSite();
+      });
+    })();
+  </script>
+
+</body>
+</html>
